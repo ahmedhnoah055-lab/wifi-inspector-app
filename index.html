@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#5a2d82">
+  <title>WiFi Inspector</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <div class="eyebrow">إدارة الشبكات المنزلية</div>
+    <h1>WiFi Inspector</h1>
+    <p>إدارة عدة راوترات من مكان واحد</p>
+  </div>
+  <span id="appStatus" class="status-pill">يعمل محلياً</span>
+</header>
+
+<main class="container">
+  <section class="summary-grid">
+    <article class="summary-card"><span>الراوترات المسجلة</span><strong id="routerCount">0</strong></article>
+    <article class="summary-card"><span>راوترات مدعومة تقنياً</span><strong id="supportedCount">0</strong></article>
+    <article class="summary-card"><span>أجهزة مسجلة يدوياً</span><strong id="deviceCount">0</strong></article>
+  </section>
+
+  <section class="panel">
+    <div class="section-heading">
+      <div><h2>الراوترات</h2><p>أضف أجهزتك وحدد بيانات كل راوتر.</p></div>
+      <button id="showRouterForm" class="primary">＋ إضافة راوتر</button>
+    </div>
+
+    <form id="routerForm" class="form-grid hidden">
+      <label>اسم تعريفي للراوتر<input id="routerName" maxlength="50" placeholder="مثلاً: راوتر البيت" required></label>
+      <label>الشركة المصنّعة
+        <select id="routerBrand" required>
+          <option value="">اختر الشركة</option>
+          <option>Huawei</option><option>ZTE</option><option>TP-Link</option>
+          <option>MikroTik</option><option>D-Link</option><option>Tenda</option>
+          <option>Netgear</option><option>ASUS</option><option>Ubiquiti</option>
+          <option>OpenWrt</option><option>أخرى / غير معروف</option>
+        </select>
+      </label>
+      <label>الموديل<input id="routerModel" maxlength="80" placeholder="مثلاً: B535 أو اتركه فارغاً"></label>
+      <label>عنوان الراوتر (IP)<input id="routerIp" inputmode="decimal" placeholder="مثلاً: 192.168.1.1"></label>
+      <label>طريقة الاتصال
+        <select id="routerMethod">
+          <option value="unknown">لم يتم تحديدها بعد</option>
+          <option value="web">واجهة الويب فقط</option>
+          <option value="snmp">SNMP (إذا كان مفعلاً ومدعوماً)</option>
+          <option value="tr064">TR-064 (إذا كان مدعوماً)</option>
+          <option value="mikrotik">MikroTik API</option>
+          <option value="openwrt">OpenWrt ubus</option>
+        </select>
+      </label>
+      <label class="full">ملاحظات<textarea id="routerNotes" rows="2" placeholder="أي معلومات إضافية عن الجهاز"></textarea></label>
+      <div class="form-actions full">
+        <button class="primary" type="submit">حفظ الراوتر</button>
+        <button id="cancelRouter" class="secondary" type="button">إلغاء</button>
+      </div>
+    </form>
+
+    <div id="routerList" class="router-list"></div>
+    <p id="emptyRouters" class="empty">لا توجد راوترات بعد. أضف أول راوتر للبدء.</p>
+  </section>
+
+  <section class="panel">
+    <div class="section-heading">
+      <div><h2>الأجهزة المسجلة</h2><p>سجل يدوي للأجهزة المرتبطة بكل راوتر، إلى أن نفعّل القراءة التلقائية للراوترات المدعومة.</p></div>
+      <button id="showDeviceForm" class="primary">＋ إضافة جهاز</button>
+    </div>
+    <form id="deviceForm" class="form-grid hidden">
+      <label>الراوتر<select id="deviceRouter" required></select></label>
+      <label>اسم الجهاز<input id="deviceName" maxlength="60" placeholder="مثلاً: هاتف العائلة" required></label>
+      <label>عنوان IP<input id="deviceIp" inputmode="decimal" placeholder="مثلاً: 192.168.1.20"></label>
+      <label>نوع الجهاز<input id="deviceType" maxlength="40" placeholder="هاتف، حاسوب، تلفاز..."></label>
+      <div class="form-actions full">
+        <button class="primary" type="submit">حفظ الجهاز</button>
+        <button id="cancelDevice" class="secondary" type="button">إلغاء</button>
+      </div>
+    </form>
+    <div id="deviceList" class="device-list"></div>
+    <p id="emptyDevices" class="empty">لا توجد أجهزة مسجلة.</p>
+  </section>
+
+  <section class="panel note-panel">
+    <h2>ما الذي يعمل حالياً؟</h2>
+    <ul>
+      <li>حفظ عدة راوترات وأجهزتها على هذا المتصفح.</li>
+      <li>تسجيل الشركة والموديل وعنوان IP وطريقة الاتصال المحتملة.</li>
+      <li>فتح صفحة إعدادات الراوتر من عنوانه عند الاتصال بنفس الشبكة.</li>
+      <li>نسخ احتياطي واستعادة بيانات القائمة.</li>
+    </ul>
+    <p class="warning">هذه النسخة لا تكتشف الأجهزة تلقائياً ولا تقرأ الاستهلاك ولا تحظر الأجهزة. اختيار بروتوكول اتصال لا يفعّله وحده. سنضيف موصلات حقيقية بعد اختبار كل موديل، ولن نحفظ كلمات مرور الراوتر داخل التطبيق.</p>
+    <div class="backup-actions">
+      <button id="exportData" class="secondary">تصدير نسخة احتياطية</button>
+      <label class="file-button secondary">استعادة نسخة<input id="importData" type="file" accept="application/json"></label>
+    </div>
+  </section>
+</main>
+
+<footer>WiFi Inspector · نسخة التطوير متعددة الراوترات</footer>
+<div id="toast" role="status" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

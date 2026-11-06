@@ -1,0 +1,13 @@
+{
+  "name": "WiFi Inspector",
+  "short_name": "WiFi Inspector",
+  "description": "إدارة عدة راوترات وأجهزة الشبكة",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f2f8",
+  "theme_color": "#5a2d82",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": []
+}
